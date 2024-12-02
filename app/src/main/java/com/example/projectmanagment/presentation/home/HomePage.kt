@@ -20,15 +20,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -43,9 +39,7 @@ import com.example.projectmanagment.R
 import com.example.projectmanagment.data.Course
 import com.example.projectmanagment.presentation.HomeViewModel
 import com.example.projectmanagment.presentation.UiState
-import com.example.projectmanagment.presentation.auth.AuthState
 import com.example.projectmanagment.presentation.auth.AuthViewModel
-import com.example.projectmanagment.presentation.navigation.AuthRoutes
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -65,7 +59,7 @@ fun HomePage(navController: NavController, authViewModel: AuthViewModel) {
         when (UiState) {
             is UiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
             is UiState.Success -> SuccessScreen(modifier = Modifier.fillMaxSize(),
-                UiState.categori,userName)
+                UiState.categori,userName, navController)
 //            is UiState.Success -> categories(UiState.categories,navController = navController)
             is UiState.Error -> ErrorScreen(modifier = Modifier.fillMaxSize())
             else -> {}
@@ -95,7 +89,12 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
     }
 }
 @Composable
-fun SuccessScreen(modifier: Modifier = Modifier, categori: List<Course>, userName: String) {
+fun SuccessScreen(
+    modifier: Modifier = Modifier,
+    categori: List<Course>,
+    userName: String,
+    navController: NavController
+) {
     Column(
 //        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -147,7 +146,9 @@ fun SuccessScreen(modifier: Modifier = Modifier, categori: List<Course>, userNam
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(categori){ Course->
-                Courses(Course)
+                Courses(
+                    Course, navController
+                )
             }
         }
     }
@@ -158,6 +159,7 @@ fun SuccessScreen(modifier: Modifier = Modifier, categori: List<Course>, userNam
 @Composable
 fun Courses(
     Cource: Course,
+    navController: NavController,
 ){
 //    2
 //    OutlinedCard(
@@ -181,10 +183,13 @@ fun Courses(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(
-                onClick = {}
-//                onClick = navController.navigate(
-//                    Screen.CourseDetailPage.route + "/$CourseID"
-//                )
+//                onClick = {}
+                onClick = {
+                    navController.navigate(
+                        "course"+ "/${Cource.id}"
+
+                    )
+                }
             ),
         shape = RoundedCornerShape(15.dp)
     )

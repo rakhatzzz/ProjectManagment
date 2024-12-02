@@ -86,6 +86,13 @@ fun ProfilePage(navController: NavController,authViewModel: AuthViewModel){
                 textAlign = TextAlign.Center,
             )
         )
+        Text(
+            modifier = Modifier.padding(top = 20.dp),
+            text = "Your rating: № 12\n" +
+            "elo: 1530"
+
+        )
+
 
         Spacer(modifier = Modifier.height(25.dp))
         Row (

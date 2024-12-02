@@ -23,6 +23,7 @@ fun BottomBar(navController: NavHostController) {
         mutableStateOf(0)
     }
     NavigationBar {
+
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 selected = index == selectedItemIndex,
