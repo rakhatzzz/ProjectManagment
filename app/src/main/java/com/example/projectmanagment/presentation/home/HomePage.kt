@@ -53,14 +53,6 @@ fun HomePage(navController: NavController, authViewModel: AuthViewModel) {
     val user = FirebaseAuth.getInstance().currentUser
     val userName = user?.displayName ?: "User"
 
-    val authState = authViewModel.authState.observeAsState()
-
-    LaunchedEffect(authState.value) {
-        when(authState.value){
-            is AuthState.Unauthenticated -> navController.navigate(AuthRoutes.LOGIN)
-            else -> Unit
-        }
-    }
 
 
     val homeViewModel: HomeViewModel = viewModel()

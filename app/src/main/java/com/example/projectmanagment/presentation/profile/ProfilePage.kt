@@ -12,8 +12,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,38 +32,57 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.projectmanagment.R
+import com.example.projectmanagment.presentation.auth.AuthState
 import com.example.projectmanagment.presentation.auth.AuthViewModel
+import com.example.projectmanagment.presentation.navigation.AuthRoutes
+import com.google.firebase.auth.FirebaseAuth
 
 
 @Composable
 fun ProfilePage(navController: NavController,authViewModel: AuthViewModel){
+    val user = FirebaseAuth.getInstance().currentUser
+    val userName = user?.displayName ?: "User"
+    val usermail = user?.email ?: ""
+    val authState = authViewModel.authState.observeAsState()
+
+    LaunchedEffect(authState.value) {
+        when(authState.value){
+            is AuthState.Unauthenticated -> navController.navigate(AuthRoutes.LOGIN)
+            else -> Unit
+        }
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 25.dp).padding(horizontal = 25.dp)
     ){
-        Image(
-            painter = painterResource(R.drawable.icons8_male_user_96),
-            contentDescription = "profile_icon",
+        Icon(imageVector = Icons.Default.AccountCircle,
+            contentDescription = null,
             modifier = Modifier
                 .size(250.dp)
         )
+//        Image(
+//            painter = painterResource(),
+//            contentDescription = "profile_icon",
+//            modifier = Modifier
+//                .size(250.dp)
+//        )
         Text(
-            text = "Name Surname",
+            text = userName,
             style = TextStyle(
                 fontSize = 24.sp,
                 fontWeight = FontWeight(700),
-                color = Color(0xFF3D3BFF),
+//                color = Color(0xFF3D3BFF),
                 textAlign = TextAlign.Center,
             )
         )
         Text(
-            text = "example@ex.com",
+            text = usermail,
             style = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight(600),
-                color = Color(0xFF3D3BFF),
+//                color = Color(0xFF3D3BFF),
                 textAlign = TextAlign.Center,
             )
         )
@@ -71,7 +97,7 @@ fun ProfilePage(navController: NavController,authViewModel: AuthViewModel){
                 .background(Color(0xFF3D3BFF), RoundedCornerShape(20.dp))
         ){
             Text(
-                text = "Избранные",
+                text = "Favourite",
                 style = TextStyle(
                     fontSize = 25.sp,
                     fontWeight = FontWeight(600),
@@ -90,7 +116,7 @@ fun ProfilePage(navController: NavController,authViewModel: AuthViewModel){
                 .background(Color(0xFF3D3BFF), RoundedCornerShape(20.dp))
         ){
             Text(
-                text = "История",
+                text = "History",
                 style = TextStyle(
                     fontSize = 25.sp,
                     fontWeight = FontWeight(600),
@@ -98,6 +124,13 @@ fun ProfilePage(navController: NavController,authViewModel: AuthViewModel){
                     textAlign = TextAlign.Center,
                 )
             )
+        }
+        Spacer(modifier = Modifier.height(200.dp))
+
+        TextButton(
+            onClick = { authViewModel.signout() }
+        ) {
+            Text(text = "Sign out")
         }
     }
 }
